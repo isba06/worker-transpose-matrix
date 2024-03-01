@@ -21,11 +21,33 @@ list(REMOVE_ITEM SRC_FILES ${PROJECT_SOURCE_DIR}/src/main.cpp)
 add_library(worker_transpose_matrix_lib ${SRC_FILES})
 target_compile_options(worker_transpose_matrix_lib PUBLIC ${COMPILE_OPTS})
 target_link_options(worker_transpose_matrix_lib PUBLIC ${LINK_OPTS})
-#setup_warnings(worker_transpose_matrix_lib)
+
+#googletest
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 # Main is separate
-add_executable(worker_transpose_matrix ${PROJECT_SOURCE_DIR}/src/main.cpp)
-target_compile_options(worker_transpose_matrix PRIVATE ${COMPILE_OPTS})
-target_link_options(worker_transpose_matrix PRIVATE ${LINK_OPTS})
-target_link_libraries(worker_transpose_matrix worker_transpose_matrix_lib)
-#setup_warnings(worker_transpose_matrix)
+add_executable(transpose ${PROJECT_SOURCE_DIR}/src/main.cpp)
+target_compile_options(transpose PRIVATE ${COMPILE_OPTS})
+target_link_options(transpose PRIVATE ${LINK_OPTS})
+target_link_libraries(transpose worker_transpose_matrix_lib)
+
+enable_testing()
+
+add_executable(
+  tests
+  tests/tests.cpp
+)
+target_link_libraries(
+  tests
+  GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
