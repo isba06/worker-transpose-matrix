@@ -6,6 +6,9 @@
 struct Matrix {
     std::vector<int> data;
     unsigned width, height;
+    friend bool operator==(const Matrix& lhs, const Matrix& rhs) {
+        return ((lhs.data == rhs.data) && (lhs.height == rhs.height) && (lhs.width == rhs.width)); 
+    }
 };
 
 class WorkerInterface {

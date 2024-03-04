@@ -41,13 +41,12 @@ target_link_libraries(transpose worker_transpose_matrix_lib)
 enable_testing()
 
 add_executable(
-  tests
+  runUnitTests
   tests/tests.cpp
 )
-target_link_libraries(
-  tests
-  GTest::gtest_main
-)
+target_link_libraries(runUnitTests GTest::gtest_main GTest::gmock_main)
 
 include(GoogleTest)
-gtest_discover_tests(tests)
+gtest_discover_tests(runUnitTests)
+
+target_link_libraries(runUnitTests worker_transpose_matrix_lib)

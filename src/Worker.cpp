@@ -18,6 +18,10 @@ Matrix Worker::transpose(Matrix matrix) {
         return transposed;
 }
 
+std::future<Matrix> Worker::AsyncProcess(Matrix m) {
+    return std::async(std::launch::deferred, &Worker::transpose, this, m);
+}
+
 std::shared_ptr<WorkerInterface> get_new_worker() {
     return std::make_shared<Worker>();
 }
