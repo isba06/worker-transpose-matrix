@@ -115,12 +115,53 @@ TEST(WorkerTest, AsyncProcessTest) {
     EXPECT_EQ(m.height, expected_mtx.height);
 }
 
+
+TEST(WorkerTest, SeveralAsyncProcess) {
+    auto worker = get_new_worker();
+    Matrix mtx1 {
+        .data = { 1, 2, 3,
+                  4, 5, 6 },
+        .width = 3,
+        .height = 2 };
+
+    Matrix mtx2 {
+        .data = { 1, 2, 3,
+                  4, 5, 6,
+                  7, 8, 9 },
+        .width = 3,
+        .height = 3 };    
+
+    Matrix expected_mtx1 {
+        .data = { 1, 4,
+                  2, 5,
+                  3, 6 },
+        .width = 2,
+        .height = 3
+    };
+
+    Matrix expected_mtx2 {
+        .data = { 1, 4, 7,
+                  2, 5, 8,
+                  3, 6, 9 },
+        .width = 3,
+        .height = 3
+    };
+
+    auto future1 = worker->AsyncProcess(mtx1);
+    auto future2 = worker->AsyncProcess(mtx2);
+    auto m1 = future1.get();
+    auto m2 = future2.get();
+
+    EXPECT_EQ(m1.data, expected_mtx1.data);
+    EXPECT_EQ(m2.width, expected_mtx2.width);
+}
+
 class MockWorker : public Worker {
 public:
     MOCK_METHOD(std::future<Matrix>, AsyncProcess, (Matrix), (override));
 };
 
-TEST(WorkerTest, MockAsyncProcessTest) {
+TEST(WorkerTest, MockAsyncProcess) {
     MockWorker mock_worker;
     Matrix input_matrix{ {1, 2, 3, 4}, 2, 2 };
     Matrix expected_matrix{ {1, 3, 2, 4}, 2, 2 };
