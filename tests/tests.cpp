@@ -63,7 +63,6 @@ TEST(WorkerTest, GetNewWorkerTest) {
     auto worker = get_new_worker();
     ASSERT_TRUE(worker != nullptr);
 
-    // Проверяем, что возвращенный объект является экземпляром класса Worker
     auto derived_worker = std::dynamic_pointer_cast<Worker>(worker);
     ASSERT_TRUE(derived_worker != nullptr);
 }
@@ -91,13 +90,11 @@ TEST(WorkerTest, AsyncProcessTest) {
     EXPECT_EQ(m.height, expected_mtx.height);
 }
 
-// Тест для AsyncProcess
 class MockWorker : public Worker {
 public:
     MOCK_METHOD(std::future<Matrix>, AsyncProcess, (Matrix), (override));
 };
 
-// Тест для AsyncProcess
 TEST(WorkerTest, MockAsyncProcessTest) {
     MockWorker mock_worker;
     Matrix input_matrix{ {1, 2, 3, 4}, 2, 2 };
@@ -115,5 +112,3 @@ TEST(WorkerTest, MockAsyncProcessTest) {
     EXPECT_EQ(result.height, expected_matrix.height);
     EXPECT_EQ(result.data, expected_matrix.data);
 }
-
-//TEST(WorkerTests, MatrixTranspose){}
