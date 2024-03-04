@@ -3,10 +3,9 @@
 
 #include "Worker.h"
 
-TEST(MatrixTests, transpose) {
-  Worker worker;
+TEST(MatrixTests, simple) {
   Matrix mtx {
-    .data = { 1, 2, 3, 4, 5, 6 },
+    .data = {1, 2, 3, 4, 5, 6},
     .width = 3,
     .height = 2 
   };
@@ -16,13 +15,16 @@ TEST(MatrixTests, transpose) {
     .width = 2,
     .height = 3};
 
+  Worker worker;
   Matrix result = worker.transpose(mtx);
 
   EXPECT_EQ(result.width, expected_mtx.width);
   EXPECT_EQ(result.height, expected_mtx.height);
   EXPECT_EQ(result.data, expected_mtx.data);
+}
 
-  Matrix mtx2 {
+TEST(MatrixTests, 10x10) {
+    Matrix mtx {
     .data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
               11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
               21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -37,7 +39,7 @@ TEST(MatrixTests, transpose) {
     .height = 10 
   };
 
-  Matrix expected_mtx2 = { 
+  Matrix expected_mtx = { 
     .data = { 1, 11, 21, 31, 41, 51, 61, 71, 81, 91,
               2, 12, 22, 32, 42, 52, 62, 72, 82, 92,
               3, 13, 23, 33, 43, 53, 63, 73, 83, 93,
@@ -52,11 +54,34 @@ TEST(MatrixTests, transpose) {
     .height = 10  
   };
 
-  result = worker.transpose(mtx2);
+  Worker worker;
+  auto result = worker.transpose(mtx);
 
-  EXPECT_EQ(result.width, expected_mtx2.width);
-  EXPECT_EQ(result.height, expected_mtx2.height);
-  EXPECT_EQ(result.data, expected_mtx2.data);
+  EXPECT_EQ(result.width, expected_mtx.width);
+  EXPECT_EQ(result.height, expected_mtx.height);
+  EXPECT_EQ(result.data, expected_mtx.data);
+}
+
+TEST(MatrixTests, 1x1) {
+  Matrix mtx = {
+    .data = {1},
+    .width = 1,
+    .height = 1
+  };
+
+  Worker worker;
+  EXPECT_EQ(worker.transpose(mtx).data, mtx.data);
+}
+
+TEST(MatrixTests, 0x0) {
+  Matrix mtx = {
+    .data = {},
+    .width = 0,
+    .height = 0
+  };
+  
+  Worker worker;
+  EXPECT_EQ(worker.transpose(mtx).data, mtx.data);
 }
 
 TEST(WorkerTest, GetNewWorkerTest) {
