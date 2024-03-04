@@ -87,6 +87,8 @@ TEST(WorkerTest, AsyncProcessTest) {
     auto m = future.get();
 
     EXPECT_EQ(m.data, expected_mtx.data);
+    EXPECT_EQ(m.width, expected_mtx.width);
+    EXPECT_EQ(m.height, expected_mtx.height);
 }
 
 // Тест для AsyncProcess
@@ -101,11 +103,14 @@ TEST(WorkerTest, MockAsyncProcessTest) {
     Matrix input_matrix{ {1, 2, 3, 4}, 2, 2 };
     Matrix expected_matrix{ {1, 3, 2, 4}, 2, 2 };
 
-    EXPECT_CALL(mock_worker, AsyncProcess(input_matrix));
-  
+    EXPECT_CALL(mock_worker, AsyncProcess(input_matrix))
+        .WillOnce(testing::Return(std::async(std::launch::deferred, [&expected_matrix]() {
+            return expected_matrix;
+        })));
+        
     auto future_result = mock_worker.AsyncProcess(input_matrix);
+    
     auto result = future_result.get();
-
     EXPECT_EQ(result.width, expected_matrix.width);
     EXPECT_EQ(result.height, expected_matrix.height);
     EXPECT_EQ(result.data, expected_matrix.data);
