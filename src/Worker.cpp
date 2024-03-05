@@ -19,7 +19,7 @@ Matrix Worker::transpose(Matrix matrix) {
 }
 
 std::future<Matrix> Worker::AsyncProcess(Matrix m) {
-    return std::async(std::launch::deferred, &Worker::transpose, this, m);
+    return std::async(std::launch::async, &Worker::transpose, this, m);
 }
 
 std::shared_ptr<WorkerInterface> get_new_worker() {
